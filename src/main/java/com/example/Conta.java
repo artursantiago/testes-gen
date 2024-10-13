@@ -26,18 +26,12 @@ public class Conta {
 
     private char digitoVerificador;
 
-
-    /**
-     * Says hello to the world.
-     * @param numeroConta numero da conta para ser validado.
-     * @see https://www.creditas.com/exponencial/digito-da-conta-o-que-e-para-que-serve-e-como-encontra-lo/
-     */
+    // Método para calcular o dígito verificador de uma conta
     public char calculaDigitoVerificador(int numeroConta) {
         Integer[] digitosConta = new Integer[8];
         Arrays.fill(digitosConta, 0);
-        int[] multiplicadores = {2,3,4,5,6,7,8,9};
-        String numeroContaAsString = new StringBuilder(
-                String.valueOf(numeroConta))
+        int[] multiplicadores = {2, 3, 4, 5, 6, 7, 8, 9};
+        String numeroContaAsString = new StringBuilder(String.valueOf(numeroConta))
                 .reverse().toString();
 
         for (int i = 0; i < numeroContaAsString.length(); i++) {
@@ -47,9 +41,33 @@ public class Conta {
 
         int somaDigitos = Stream.of(digitosConta).reduce(0, Integer::sum);
         int restoDivisao = somaDigitos % 11;
-        if(restoDivisao < 10){
+        if (restoDivisao < 10) {
             return Character.forDigit(restoDivisao, 10);
         }
         return 'X';
+    }
+
+    // Método para depositar dinheiro na conta
+    public void depositar(Double valor) throws IllegalArgumentException {
+        if (valor <= 0) {
+            throw new IllegalArgumentException("O valor do depósito deve ser maior que zero.");
+        }
+        this.saldo += valor;
+    }
+
+    // Método para sacar dinheiro da conta
+    public void sacar(Double valor) throws IllegalArgumentException {
+        if (valor <= 0) {
+            throw new IllegalArgumentException("O valor do saque deve ser maior que zero.");
+        }
+        if (this.saldo < valor) {
+            throw new IllegalArgumentException("Saldo insuficiente para o saque.");
+        }
+        this.saldo -= valor;
+    }
+
+    // Método que verifica se o saldo é positivo
+    public boolean isSaldoPositivo() {
+        return this.saldo > 0;
     }
 }
